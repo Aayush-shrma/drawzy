@@ -5,19 +5,24 @@ const {
 const fs = require('fs');
 const path = require('path');
 
+const IS_MAC = process.platform === 'darwin';
 const APP_ID = 'com.aayushsharma.drawzy';
 const REPO_URL = 'https://github.com/Aayush-shrma/drawzy';
 const ICON = path.join(__dirname, 'assets', 'icon.png');
+// macOS menu bar icons are monochrome "template" images; Electron picks up the @2x file itself.
+const TRAY_TEMPLATE = path.join(__dirname, 'assets', 'trayTemplate.png');
 const DRAW_KEY = 'CommandOrControl+Shift+D';
 const VISIBLE_KEY = 'CommandOrControl+Shift+H';
+const MOD_LABEL = IS_MAC ? 'Cmd' : 'Ctrl';
 const STARTUP_FLAG = '--startup';
+const SELF_TEST = process.argv.includes('--self-test');
 
 let win = null;
 let tray = null;
 let drawing = false;
 let visible = true;
 
-if (!app.requestSingleInstanceLock()) app.quit();
+if (!SELF_TEST && !app.requestSingleInstanceLock()) app.quit();
 
 function createWindow() {
   const { bounds } = screen.getPrimaryDisplay();
@@ -29,14 +34,19 @@ function createWindow() {
     movable: false,
     minimizable: false,
     maximizable: false,
+    fullscreenable: false,
     skipTaskbar: true,
     hasShadow: false,
+    roundedCorners: false,
+    enableLargerThanScreen: true,
     show: false,
     icon: ICON,
     backgroundColor: '#00000000',
     webPreferences: { preload: path.join(__dirname, 'preload.js') },
   });
   win.setAlwaysOnTop(true, 'screen-saver');
+  // On macOS, follow the user across desktops and over full-screen apps.
+  if (IS_MAC) win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   win.setIgnoreMouseEvents(true);
   win.loadFile(path.join(__dirname, 'index.html'));
   // Pinch / Ctrl+wheel zooms the drawing, not the page.
@@ -53,6 +63,8 @@ function setDrawing(on) {
   if (on) {
     win.setAlwaysOnTop(true, 'screen-saver');
     win.show();
+    // A menu bar app has to take focus explicitly to receive the drawing shortcuts.
+    if (IS_MAC) app.focus({ steal: true });
     win.focus();
   } else {
     win.blur();
@@ -71,16 +83,22 @@ function notify(body) {
   if (Notification.isSupported()) new Notification({ title: 'Drawzy', body, icon: ICON }).show();
 }
 
-// --- tray ---
+// --- tray / menu bar ---
 
 function loginItemOptions() {
+  if (IS_MAC) return {};
   // When run from source, Electron needs the app folder as an argument.
   return app.isPackaged
     ? { args: [STARTUP_FLAG] }
     : { path: process.execPath, args: [app.getAppPath(), STARTUP_FLAG] };
 }
 
+function openedAtLogin() {
+  return IS_MAC ? app.getLoginItemSettings().wasOpenedAtLogin : process.argv.includes(STARTUP_FLAG);
+}
+
 function trayIcon() {
+  if (IS_MAC) return nativeImage.createFromPath(TRAY_TEMPLATE);
   const size = Math.round(16 * screen.getPrimaryDisplay().scaleFactor);
   return nativeImage.createFromPath(ICON).resize({ width: size, height: size, quality: 'best' });
 }
@@ -96,13 +114,13 @@ function updateTray() {
     { label: 'Clear drawings', click: () => win.webContents.send('command', 'clear') },
     { type: 'separator' },
     {
-      label: 'Start with Windows', type: 'checkbox', checked: startup,
+      label: IS_MAC ? 'Open at login' : 'Start with Windows', type: 'checkbox', checked: startup,
       click: (item) => app.setLoginItemSettings({ openAtLogin: item.checked, ...loginItemOptions() }),
     },
     { label: 'Help && updates', click: () => shell.openExternal(REPO_URL) },
     { label: 'Quit Drawzy', click: () => app.quit() },
   ]));
-  tray.setToolTip(drawing ? 'Drawzy: drawing' : 'Drawzy: Ctrl+Shift+D to draw');
+  tray.setToolTip(drawing ? 'Drawzy: drawing' : `Drawzy: ${MOD_LABEL}+Shift+D to draw`);
 }
 
 // --- IPC ---
@@ -155,6 +173,7 @@ ipcMain.handle('read-clipboard', () => {
 
 ipcMain.handle('write-clipboard-text', (_, text) => clipboard.writeText(text));
 
+// On macOS this asks for Screen Recording permission the first time.
 ipcMain.handle('screenshot', async () => {
   const display = screen.getPrimaryDisplay();
   const thumbnailSize = {
@@ -173,25 +192,59 @@ ipcMain.handle('screenshot', async () => {
   return file;
 });
 
+// --- self-test: launch the real overlay, check the drawing engine loaded, exit (used by CI) ---
+
+function runSelfTest() {
+  const fail = setTimeout(() => {
+    console.error('SELFTEST timed out');
+    app.exit(2);
+  }, 30000);
+  createWindow();
+  win.webContents.once('did-finish-load', async () => {
+    await new Promise((r) => setTimeout(r, 2000));
+    const result = await win.webContents.executeJavaScript(`({
+      rough: typeof rough,
+      freehand: typeof getStroke === 'function',
+      tools: document.querySelectorAll('[data-tool]').length,
+      platform: window.overlay.platform,
+    })`);
+    const ok = result.rough === 'object' && result.freehand && result.tools > 5;
+    console.log(`SELFTEST ${ok ? 'passed' : 'failed'} ${JSON.stringify(result)}`);
+    clearTimeout(fail);
+    app.exit(ok ? 0 : 1);
+  });
+}
+
 // --- app lifecycle ---
 
 app.setAppUserModelId(APP_ID);
 
 app.whenReady().then(() => {
-  // Drop Electron's default menu so its shortcuts (reload, page zoom, close) don't fire.
-  Menu.setApplicationMenu(null);
+  if (IS_MAC) {
+    // No Dock icon: Drawzy lives in the menu bar. Keep a minimal Edit menu so copy/paste work while typing.
+    app.dock?.hide();
+    Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: 'editMenu' }]));
+  } else {
+    // Drop Electron's default menu so its shortcuts (reload, page zoom, close) don't fire.
+    Menu.setApplicationMenu(null);
+  }
+
+  if (SELF_TEST) return runSelfTest();
+
   createWindow();
   tray = new Tray(trayIcon());
-  tray.on('click', () => setDrawing(!drawing));
+  // On Windows a click toggles drawing; on macOS a click opens the menu, as menu bar apps do.
+  if (!IS_MAC) tray.on('click', () => setDrawing(!drawing));
   updateTray();
 
   const ok = globalShortcut.register(DRAW_KEY, () => setDrawing(!drawing))
     & globalShortcut.register(VISIBLE_KEY, () => setVisible(!visible));
-  if (!ok) notify('A Drawzy hotkey is used by another app. Click the tray icon to draw instead.');
-  // Drawzy has no window of its own, so say hello unless Windows started it quietly.
-  else if (!process.argv.includes(STARTUP_FLAG)) notify('Drawzy is running. Press Ctrl+Shift+D to draw on anything.');
+  if (!ok) notify('A Drawzy shortcut is used by another app. Use the Drawzy menu to draw instead.');
+  // Drawzy has no window of its own, so say hello unless it started quietly at login.
+  else if (!openedAtLogin()) notify(`Drawzy is running. Press ${MOD_LABEL}+Shift+D to draw on anything.`);
 });
 
-// Opening Drawzy again (e.g. from the Start menu) jumps straight into drawing.
+// Opening Drawzy again (e.g. from the Start menu or Launchpad) jumps straight into drawing.
 app.on('second-instance', () => win && setDrawing(true));
+app.on('activate', () => win && tray && setDrawing(true));
 app.on('will-quit', () => globalShortcut.unregisterAll());

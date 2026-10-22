@@ -7,7 +7,10 @@ const gen = rc.generator;
 const textEditor = document.getElementById('text-editor');
 const $ = (id) => document.getElementById(id);
 
-const FONT = '"Segoe Print", "Comic Sans MS", cursive';
+const FONT = '"Segoe Print", "Bradley Hand", "Chalkboard SE", "Comic Sans MS", cursive';
+const IS_MAC = window.overlay?.platform === 'darwin';
+// Shortcut labels are written Windows-style and translated for macOS.
+const keyLabel = (s) => (IS_MAC ? s.replace(/Ctrl/g, 'Cmd').replace(/Alt/g, 'Option') : s);
 const LINE_HEIGHT = 1.5;
 const SELECTION_PAD = 6;
 const HANDLE_SIZE = 9;
@@ -195,7 +198,7 @@ function buildToolbar() {
     else if (btn.id === 'exit-btn') overlay.exitDraw();
   });
 
-  $('more-menu').innerHTML = MORE_ITEMS.map((m) => `<button class="menu-item" data-more="${m.id}"><span class="menu-icon">${svg(ICONS[m.icon])}</span><span class="grow">${m.label}</span><kbd>${m.kbd}</kbd></button>`).join('');
+  $('more-menu').innerHTML = MORE_ITEMS.map((m) => `<button class="menu-item" data-more="${m.id}"><span class="menu-icon">${svg(ICONS[m.icon])}</span><span class="grow">${m.label}</span><kbd>${keyLabel(m.kbd)}</kbd></button>`).join('');
   $('more-menu').addEventListener('click', (e) => {
     const item = e.target.closest('[data-more]');
     if (!item) return;
@@ -232,7 +235,7 @@ function setTool(tool) {
   if (tool !== 'select') selected.clear();
   document.querySelectorAll('[data-tool]').forEach((b) => b.classList.toggle('active', b.dataset.tool === tool));
   $('more-btn').classList.toggle('active', !!toolById(tool)?.more);
-  $('tool-hint').textContent = toolById(tool)?.hint || '';
+  $('tool-hint').textContent = keyLabel(toolById(tool)?.hint || '');
   canvas.style.cursor = toolCursor();
   refreshPanel();
   render();
@@ -296,13 +299,13 @@ function menuItem(m, extraClass = '') {
   const icon = m.check
     ? `<span class="menu-icon check${m.check() ? '' : ' off'}">${svg(ICONS.check)}</span>`
     : `<span class="menu-icon">${svg(ICONS[m.icon])}</span>`;
-  return `<button class="menu-item${m.accent ? ' accent' : ''}${extraClass}" data-menu="${m.id}">${icon}<span class="grow">${m.label}</span>${m.kbd ? `<kbd>${m.kbd}</kbd>` : ''}</button>`;
+  return `<button class="menu-item${m.accent ? ' accent' : ''}${extraClass}" data-menu="${m.id}">${icon}<span class="grow">${m.label}</span>${m.kbd ? `<kbd>${keyLabel(m.kbd)}</kbd>` : ''}</button>`;
 }
 
 function renderMenu() {
-  $('hint').textContent = settings.onExit === 'keep'
+  $('hint').textContent = keyLabel(settings.onExit === 'keep'
     ? 'Esc or Ctrl+Shift+D to stop drawing · drawings stay on screen · Ctrl+Shift+H hides them'
-    : 'Esc or Ctrl+Shift+D to stop drawing · drawings hide and come back next time · Ctrl+Shift+H shows them';
+    : 'Esc or Ctrl+Shift+D to stop drawing · drawings hide and come back next time · Ctrl+Shift+H shows them');
 
   const theme = resolvedTheme();
   const prefs = state.prefsOpen
@@ -1261,7 +1264,7 @@ function clearAll() {
   commit();
   refreshPanel();
   render();
-  toast('Canvas cleared — Ctrl+Z to bring it back');
+  toast(keyLabel('Canvas cleared — Ctrl+Z to bring it back'));
 }
 
 function eraseAt(x, y) {
@@ -1580,7 +1583,7 @@ async function openScene() {
     commit();
     refreshPanel();
     zoomToFit();
-    toast(`Opened ${file.name} — Ctrl+Z to go back`);
+    toast(keyLabel(`Opened ${file.name} — Ctrl+Z to go back`));
   } catch {
     toast(`${file.name} isn't an Excalidraw drawing`);
   }
@@ -1688,7 +1691,7 @@ function commands() {
     { name: 'Screenshot with screen', icon: 'camera', keys: 'Ctrl+Shift+S', run: screenshot },
     { name: 'Find on canvas', icon: 'search', keys: 'Ctrl+F', run: openFind },
     { name: 'Toggle dark mode', icon: 'moon', keys: 'Alt+Shift+D', run: () => setTheme(resolvedTheme() === 'dark' ? 'light' : 'dark') },
-    { name: 'Theme: follow Windows', icon: 'monitor', run: () => setTheme('system') },
+    { name: 'Theme: follow system', icon: 'monitor', run: () => setTheme('system') },
     { name: 'Toggle canvas background', icon: 'board', keys: 'B', run: toggleBoard },
     { name: `Tool lock: turn ${settings.toolLock ? 'off' : 'on'}`, icon: settings.toolLock ? 'unlock' : 'lock', keys: 'Q', run: toggleToolLock },
     { name: 'When I stop drawing: keep drawings on screen', icon: 'check', run: () => setOnExit('keep') },
@@ -1719,7 +1722,7 @@ function renderPalette() {
   palette.items = commands().filter((c) => words.every((w) => c.name.toLowerCase().includes(w)));
   palette.index = Math.min(palette.index, Math.max(0, palette.items.length - 1));
   $('palette-list').innerHTML = palette.items.length
-    ? palette.items.map((c, i) => `<div class="palette-item${i === palette.index ? ' active' : ''}" data-index="${i}"><span class="menu-icon">${svg(ICONS[c.icon] || '')}</span><span class="grow">${c.name}</span>${c.keys ? `<kbd>${c.keys}</kbd>` : ''}</div>`).join('')
+    ? palette.items.map((c, i) => `<div class="palette-item${i === palette.index ? ' active' : ''}" data-index="${i}"><span class="menu-icon">${svg(ICONS[c.icon] || '')}</span><span class="grow">${c.name}</span>${c.keys ? `<kbd>${keyLabel(c.keys)}</kbd>` : ''}</div>`).join('')
     : '<div class="palette-empty">No matching commands</div>';
   $('palette-list').querySelector('.active')?.scrollIntoView({ block: 'nearest' });
 }
@@ -1784,7 +1787,7 @@ const SHORTCUTS = [
 function buildHelp() {
   $('help-close').innerHTML = svg(ICONS.close);
   $('help-body').innerHTML = SHORTCUTS.map(([title, rows]) =>
-    `<div><h3>${title}</h3>${rows.map(([name, keys]) => `<div class="help-row"><span>${name}</span><kbd>${keys}</kbd></div>`).join('')}</div>`).join('');
+    `<div><h3>${title}</h3>${rows.map(([name, keys]) => `<div class="help-row"><span>${name}</span><kbd>${keyLabel(keys)}</kbd></div>`).join('')}</div>`).join('');
   $('help-close').addEventListener('click', closeHelp);
   $('help-backdrop').addEventListener('pointerdown', (e) => {
     if (e.target === $('help-backdrop')) closeHelp();
@@ -2035,8 +2038,8 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
-  if (e.altKey && e.shiftKey && key === 'd') return setTheme(resolvedTheme() === 'dark' ? 'light' : 'dark');
-  if (e.altKey && e.shiftKey && key === 'c') return copyAsPng();
+  if (e.altKey && e.shiftKey && e.code === 'KeyD') return setTheme(resolvedTheme() === 'dark' ? 'light' : 'dark');
+  if (e.altKey && e.shiftKey && e.code === 'KeyC') return copyAsPng();
 
   if (mod) {
     const shortcuts = {
@@ -2168,6 +2171,7 @@ buildBottomBars();
 buildFind();
 buildPalette();
 buildHelp();
+document.querySelectorAll('[title]').forEach((el) => { el.title = keyLabel(el.title); });
 if (settings.remember) elements = load(DRAWING_KEY) || [];
 setTool('pen');
 commit();

@@ -1,8 +1,8 @@
 {
   "name": "drawzy",
   "productName": "Drawzy",
-  "version": "1.0.0",
-  "description": "Draw on anything on your screen. Excalidraw-style sketching, arrows, notes and a laser pointer, one shortcut away.",
+  "version": "1.1.0",
+  "description": "Draw on anything on your screen. Excalidraw-style sketching, arrows, notes and a laser pointer, one shortcut away. For Windows and macOS.",
   "main": "src/main.js",
   "author": "Aayush Sharma",
   "license": "MIT",
@@ -22,12 +22,15 @@
     "whiteboard",
     "presentation",
     "electron",
-    "windows"
+    "windows",
+    "macos"
   ],
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win",
-    "release": "electron-builder --win --publish always"
+    "dist": "electron-builder --publish never",
+    "dist:win": "electron-builder --win --publish never",
+    "dist:mac": "electron-builder --mac --publish never",
+    "test": "electron . --self-test"
   },
   "dependencies": {
     "perfect-freehand": "^1.2.3",
@@ -53,11 +56,15 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
@@ -73,6 +80,28 @@
     },
     "portable": {
       "artifactName": "Drawzy-Portable.exe"
+    },
+    "mac": {
+      "icon": "src/assets/icon.png",
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "identity": "-",
+      "hardenedRuntime": false,
+      "extendInfo": {
+        "LSUIElement": true
+      },
+      "artifactName": "Drawzy-mac.dmg"
+    },
+    "dmg": {
+      "title": "Drawzy",
+      "artifactName": "Drawzy-mac.dmg"
     },
     "publish": [
       {

@@ -357,7 +357,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
   resize: none;
   overflow: hidden;
   white-space: pre;
-  font-family: "Segoe Print", "Comic Sans MS", cursive;
+  font-family: "Segoe Print", "Bradley Hand", "Chalkboard SE", "Comic Sans MS", cursive;
   line-height: 1.5;
 }
 #text-editor.note { white-space: pre-wrap; overflow-wrap: break-word; outline: 0; }

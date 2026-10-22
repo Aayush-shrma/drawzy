@@ -6,13 +6,14 @@
 
 **Draw on anything on your screen.** Sketch, circle, point and explain over any app with Excalidraw-style tools — then get back to work with one shortcut.
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows%20installer-6965db?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-Setup.exe)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows-6965db?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-Setup.exe)
 &nbsp;
-[![Portable](https://img.shields.io/badge/No%20install-Portable%20.exe-2b2d42?style=for-the-badge)](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-Portable.exe)
+[![Download for macOS](https://img.shields.io/badge/Download-macOS-1b1b1f?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-mac.dmg)
 
 [![Latest release](https://img.shields.io/github/v/release/Aayush-shrma/drawzy?color=6965db&label=release)](https://github.com/Aayush-shrma/drawzy/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/Aayush-shrma/drawzy/total?color=2f9e44)](https://github.com/Aayush-shrma/drawzy/releases)
-[![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-1971c2)](#-install)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-1971c2)](#-install)
+[![Build](https://github.com/Aayush-shrma/drawzy/actions/workflows/build.yml/badge.svg)](https://github.com/Aayush-shrma/drawzy/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f08c00)](LICENSE)
 
 </div>
@@ -21,7 +22,7 @@
 
 ## ✨ Why Drawzy
 
-Explaining something on screen usually means taking a screenshot, opening an editor, scribbling, and pasting it somewhere. Drawzy skips all of that: press **`Ctrl` + `Shift` + `D`** and draw straight on top of whatever you're looking at — a slide, a dashboard, a bug in your code, a game, a video call.
+Explaining something on screen usually means taking a screenshot, opening an editor, scribbling, and pasting it somewhere. Drawzy skips all of that: press **`Ctrl` + `Shift` + `D`** (**`⌘` + `Shift` + `D`** on a Mac) and draw straight on top of whatever you're looking at — a slide, a dashboard, a bug in your code, a game, a video call.
 
 It feels like [Excalidraw](https://excalidraw.com) because it draws like Excalidraw: the same hand-drawn shapes ([Rough.js](https://roughjs.com)), the same smooth pen ([perfect-freehand](https://github.com/steveruizok/perfect-freehand)), and it even opens and saves `.excalidraw` files.
 
@@ -38,6 +39,8 @@ It feels like [Excalidraw](https://excalidraw.com) because it draws like Excalid
 
 ## 🚀 Install
 
+### Windows 10 and 11
+
 1. **[Download `Drawzy-Setup.exe`](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-Setup.exe)**. It installs in one click, with no admin rights needed.
 2. Drawzy starts straight away and sits in your system tray (look for the purple **Z**).
 3. Press **`Ctrl` + `Shift` + `D`** anywhere to start drawing. Press **`Esc`** to stop.
@@ -45,7 +48,20 @@ It feels like [Excalidraw](https://excalidraw.com) because it draws like Excalid
 Prefer not to install anything? Grab **[`Drawzy-Portable.exe`](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-Portable.exe)** and run it from anywhere, even a USB stick.
 
 > [!NOTE]
-> Drawzy isn't code-signed yet, so Windows SmartScreen may say *"Windows protected your PC"* the first time. Click **More info → Run anyway**. The app is open source, and every release is built from this repo by [GitHub Actions](.github/workflows/release.yml).
+> Drawzy isn't code-signed yet, so Windows SmartScreen may say *"Windows protected your PC"* the first time. Click **More info → Run anyway**. The app is open source, and every release is built from this repo by [GitHub Actions](.github/workflows/build.yml).
+
+### macOS 12 or later (Apple Silicon and Intel)
+
+1. **[Download `Drawzy-mac.dmg`](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-mac.dmg)**, open it, and drag **Drawzy** into **Applications**.
+2. Open Drawzy. It lives in your menu bar (look for the **Z**), not the Dock.
+3. Press **`⌘` + `Shift` + `D`** anywhere to start drawing. Press **`Esc`** to stop.
+
+> [!NOTE]
+> Drawzy isn't notarized by Apple yet, so the first launch shows *"Apple could not verify Drawzy"*. Click **Done**, then go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. You only need to do this once.
+>
+> Prefer the terminal? `xattr -dr com.apple.quarantine /Applications/Drawzy.app` does the same thing.
+>
+> The **Screenshot with screen** feature asks for **Screen Recording** permission the first time you use it. Nothing else needs special permissions.
 
 ## 🧰 Features
 
@@ -55,8 +71,8 @@ Prefer not to install anything? Grab **[`Drawzy-Portable.exe`](https://github.co
 | 🔴 **Laser pointer** | A glowing trail that fades away by itself — perfect for presentations and calls. |
 | 🖐️ **Select, move and resize** | Drag handles, Shift for perfect proportions, multi-select, duplicate, copy & paste, layer ordering. |
 | 🔍 **Zoom and pan** | Ctrl+scroll to zoom, scroll or Space+drag to pan, and one click to snap back to your screen. |
-| 🌗 **Light and dark mode** | Matches Excalidraw's themes, or follows Windows automatically. |
-| 📝 **Stays out of your way** | Clicks pass straight through to your apps when you're not drawing. Choose whether drawings stay on screen or hide until next time. |
+| 🌗 **Light and dark mode** | Matches Excalidraw's themes, or follows your system automatically. |
+| 📝 **Stays out of your way** | Clicks pass straight through to your apps when you're not drawing. Choose whether drawings stay on screen or hide until next time. On macOS it works over full-screen apps and on every desktop. |
 | 💾 **Excalidraw compatible** | Open and save `.excalidraw` files, and paste shapes straight from excalidraw.com. |
 | 📸 **Share instantly** | Export your drawing as PNG, copy it to the clipboard, or screenshot the screen *with* your annotations. |
 | 🖼️ **Paste anything** | Paste images, screenshots or text right onto the screen. |
@@ -65,10 +81,12 @@ Prefer not to install anything? Grab **[`Drawzy-Portable.exe`](https://github.co
 
 ## ⌨️ Shortcuts
 
-| Global (work in any app) | |
-|---|---|
-| Start / stop drawing | `Ctrl` `Shift` `D` |
-| Show / hide drawings | `Ctrl` `Shift` `H` |
+| Global (work in any app) | Windows | macOS |
+|---|---|---|
+| Start / stop drawing | `Ctrl` `Shift` `D` | `⌘` `Shift` `D` |
+| Show / hide drawings | `Ctrl` `Shift` `H` | `⌘` `Shift` `H` |
+
+On a Mac, use `⌘` wherever this page says `Ctrl`, and `Option` for `Alt`. Drawzy's own menus already show the Mac keys.
 
 <details>
 <summary><b>All shortcuts while drawing</b></summary>
@@ -100,10 +118,11 @@ git clone https://github.com/Aayush-shrma/drawzy.git
 cd drawzy
 npm install
 npm start          # run Drawzy from source
-npm run dist       # build Drawzy-Setup.exe and Drawzy-Portable.exe into dist/
+npm test           # launch the app, check the drawing engine loads, and exit
+npm run dist       # build the installers for your OS into dist/ (Windows: .exe, macOS: .dmg)
 ```
 
-Pushing a `v*` tag builds both installers on GitHub Actions and publishes them as a release.
+Every push is built and launch-tested on Windows and macOS by GitHub Actions. Pushing a `v*` tag also publishes the installers as a release.
 
 <details>
 <summary><b>Project layout</b></summary>
@@ -124,8 +143,9 @@ assets/         README images and the icon source (icon.svg)
 
 - [ ] Multi-monitor support (today Drawzy covers your main display)
 - [ ] Custom hotkeys
-- [ ] macOS and Linux builds
-- [ ] Code signing for a warning-free install
+- [x] macOS build
+- [ ] Linux build
+- [ ] Code signing and notarization for a warning-free install
 
 Ideas and bug reports are very welcome. [Open an issue](https://github.com/Aayush-shrma/drawzy/issues/new/choose).
 

@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('overlay', {
+  platform: process.platform,
   onMode: (cb) => ipcRenderer.on('mode', (_, on) => cb(on)),
   onVisible: (cb) => ipcRenderer.on('visible', (_, on) => cb(on)),
   onCommand: (cb) => ipcRenderer.on('command', (_, cmd) => cb(cmd)),
