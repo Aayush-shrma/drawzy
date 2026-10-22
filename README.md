@@ -50,7 +50,7 @@ Prefer not to install anything? Grab **[`Drawzy-Portable.exe`](https://github.co
 > [!NOTE]
 > Drawzy isn't code-signed yet, so Windows SmartScreen may say *"Windows protected your PC"* the first time. Click **More info → Run anyway**. The app is open source, and every release is built from this repo by [GitHub Actions](.github/workflows/build.yml).
 
-### macOS 12 or later (Apple Silicon and Intel)
+### macOS 13 Ventura or later (Apple Silicon and Intel)
 
 1. **[Download `Drawzy-mac.dmg`](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-mac.dmg)**, open it, and drag **Drawzy** into **Applications**.
 2. Open Drawzy. It lives in your menu bar (look for the **Z**), not the Dock.

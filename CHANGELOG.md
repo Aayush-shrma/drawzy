@@ -6,7 +6,7 @@ All notable changes to Drawzy are documented here. This project follows [Semanti
 
 ### Added
 
-- **macOS support.** A universal `.dmg` for Apple Silicon and Intel Macs (macOS 12 or later). Drawzy lives in the menu bar, works over full-screen apps and on every desktop, and uses `⌘` + `Shift` + `D`.
+- **macOS support.** A universal `.dmg` for Apple Silicon and Intel Macs (macOS 13 Ventura or later). Drawzy lives in the menu bar, works over full-screen apps and on every desktop, and uses `⌘` + `Shift` + `D`.
 - Shortcut labels in menus, the command palette and help show Mac keys (`Cmd`, `Option`) on macOS.
 - `npm test` and a `--self-test` flag that launch the real overlay and check the drawing engine loads. CI runs it on every build.
 
