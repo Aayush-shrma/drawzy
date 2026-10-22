@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:">
+  <title>Drawzy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="board"></canvas>
+  <textarea id="text-editor" spellcheck="false"></textarea>
+
+  <div class="ui">
+    <button id="menu-btn" class="btn island" title="Menu"></button>
+    <div id="menu" class="island dropdown hidden"></div>
+
+    <div id="toolbar" class="island"></div>
+    <div id="more-menu" class="island dropdown hidden"></div>
+    <div id="tool-hint"></div>
+
+    <div id="panel" class="island"></div>
+
+    <div id="find" class="island hidden">
+      <input id="find-input" placeholder="Find text on canvas" spellcheck="false">
+      <span id="find-count"></span>
+      <button class="btn small" id="find-prev" title="Previous (Shift+Enter)"></button>
+      <button class="btn small" id="find-next" title="Next (Enter)"></button>
+      <button class="btn small" id="find-close" title="Close (Esc)"></button>
+    </div>
+
+    <div class="bottom-left">
+      <div id="zoom" class="island bar">
+        <button class="btn" data-zoom="out" title="Zoom out (Ctrl+-)"></button>
+        <button class="zoom-label" data-zoom="reset" id="zoom-label" title="Reset zoom (Ctrl+0)">100%</button>
+        <button class="btn" data-zoom="in" title="Zoom in (Ctrl+=)"></button>
+      </div>
+      <div id="history-bar" class="island bar">
+        <button class="btn" data-history="undo" title="Undo (Ctrl+Z)"></button>
+        <button class="btn" data-history="redo" title="Redo (Ctrl+Y)"></button>
+      </div>
+    </div>
+
+    <button id="reset-view" class="chip hidden">Reset view to match screen</button>
+    <div id="hint"></div>
+
+    <div id="palette-backdrop" class="backdrop hidden">
+      <div class="island modal palette">
+        <input id="palette-input" placeholder="Search commands…" spellcheck="false">
+        <div id="palette-list"></div>
+      </div>
+    </div>
+
+    <div id="help-backdrop" class="backdrop hidden">
+      <div class="island modal help">
+        <div class="help-head">
+          <h2>Keyboard shortcuts</h2>
+          <button class="btn small" id="help-close" title="Close (Esc)"></button>
+        </div>
+        <div id="help-body"></div>
+      </div>
+    </div>
+  </div>
+  <div id="toast"></div>
+
+  <script src="../node_modules/roughjs/bundled/rough.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

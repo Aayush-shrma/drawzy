@@ -1,0 +1,84 @@
+{
+  "name": "drawzy",
+  "productName": "Drawzy",
+  "version": "1.0.0",
+  "description": "Draw on anything on your screen. Excalidraw-style sketching, arrows, notes and a laser pointer, one shortcut away.",
+  "main": "src/main.js",
+  "author": "Aayush Sharma",
+  "license": "MIT",
+  "homepage": "https://github.com/Aayush-shrma/drawzy#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aayush-shrma/drawzy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Aayush-shrma/drawzy/issues"
+  },
+  "keywords": [
+    "screen-annotation",
+    "drawing",
+    "overlay",
+    "excalidraw",
+    "whiteboard",
+    "presentation",
+    "electron",
+    "windows"
+  ],
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "release": "electron-builder --win --publish always"
+  },
+  "dependencies": {
+    "perfect-freehand": "^1.2.3",
+    "roughjs": "^4.6.6"
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.aayushsharma.drawzy",
+    "productName": "Drawzy",
+    "copyright": "Copyright © 2026 Aayush Sharma",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "src/assets/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Drawzy",
+      "artifactName": "Drawzy-Setup.exe",
+      "deleteAppDataOnUninstall": false
+    },
+    "portable": {
+      "artifactName": "Drawzy-Portable.exe"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "releaseType": "release"
+      }
+    ]
+  }
+}
