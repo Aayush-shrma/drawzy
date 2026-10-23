@@ -9,10 +9,12 @@
 [![Download for Windows](https://img.shields.io/badge/Download-Windows-6965db?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-Setup.exe)
 &nbsp;
 [![Download for macOS](https://img.shields.io/badge/Download-macOS-1b1b1f?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-mac.dmg)
+&nbsp;
+[![Download for Linux](https://img.shields.io/badge/Download-Linux-e8590c?style=for-the-badge&logo=linux&logoColor=white)](#linux)
 
 [![Latest release](https://img.shields.io/github/v/release/Aayush-shrma/drawzy?color=6965db&label=release)](https://github.com/Aayush-shrma/drawzy/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/Aayush-shrma/drawzy/total?color=2f9e44)](https://github.com/Aayush-shrma/drawzy/releases)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-1971c2)](#-install)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-1971c2)](#-install)
 [![Build](https://github.com/Aayush-shrma/drawzy/actions/workflows/build.yml/badge.svg)](https://github.com/Aayush-shrma/drawzy/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f08c00)](LICENSE)
 
@@ -63,6 +65,36 @@ Prefer not to install anything? Grab **[`Drawzy-Portable.exe`](https://github.co
 >
 > The **Screenshot with screen** feature asks for **Screen Recording** permission the first time you use it. Nothing else needs special permissions.
 
+### Linux
+
+Pick the download for your distro:
+
+| Distro | Download | Install |
+|---|---|---|
+| **Fedora**, RHEL, Rocky, Alma | **[`Drawzy-linux.rpm`](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-linux.rpm)** | Double-click it, or run `sudo dnf install ./Drawzy-linux.rpm` |
+| **Ubuntu**, Debian, Mint, Pop!_OS | **[`Drawzy-linux.deb`](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-linux.deb)** | Double-click it, or run `sudo apt install ./Drawzy-linux.deb` |
+| Arch, openSUSE and everything else | **[`Drawzy-linux.AppImage`](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-linux.AppImage)** | `chmod +x Drawzy-linux.AppImage`, then double-click it or run `./Drawzy-linux.AppImage` |
+
+Then open **Drawzy** from your app menu and press **`Ctrl` + `Shift` + `D`** to draw. Press **`Esc`** to stop.
+
+**GNOME** (the default on Fedora and Ubuntu) works out of the box, on Wayland too: Drawzy adds its shortcuts to **Settings → Keyboard → Custom Shortcuts** for you, so you can change them there. The shortcut even starts Drawzy if it isn't running.
+
+<a id="linux-shortcut"></a>
+<details>
+<summary><b>KDE Plasma or another Wayland desktop? Add the shortcut once (30 seconds)</b></summary>
+
+Wayland only lets your desktop own global shortcuts, so on desktops other than GNOME, add them yourself:
+
+- **KDE Plasma:** **System Settings → Keyboard → Shortcuts → Add New → Command or Script**. Enter `drawzy --toggle` and press **`Ctrl` + `Shift` + `D`**. Add `drawzy --toggle-visible` on **`Ctrl` + `Shift` + `H`** the same way.
+- **Sway, Hyprland and others:** bind `Ctrl+Shift+D` to `drawzy --toggle` in your config, for example `bindsym ctrl+shift+d exec drawzy --toggle`.
+
+Using the AppImage? Use its full path instead of `drawzy`, for example `~/Applications/Drawzy-linux.AppImage --toggle`. On X11 sessions none of this is needed.
+
+</details>
+
+> [!TIP]
+> Fedora's GNOME doesn't show tray icons, so everything from the tray is also in Drawzy's **☰ menu**: **Preferences → Open at login** and **Quit Drawzy**. If the AppImage says it needs FUSE, install `fuse-libs` (Fedora) or `libfuse2t64` (Ubuntu 24.04+), or use the `.rpm` or `.deb` instead.
+
 ## 🧰 Features
 
 | | |
@@ -70,6 +102,7 @@ Prefer not to install anything? Grab **[`Drawzy-Portable.exe`](https://github.co
 | ✏️ **Hand-drawn tools** | Pen, rectangle, diamond, ellipse, arrow, line, text, sticky notes and eraser — with Excalidraw's stroke, fill, sloppiness and opacity options. |
 | 🔴 **Laser pointer** | A glowing trail that fades away by itself — perfect for presentations and calls. |
 | 🖐️ **Select, move and resize** | Drag handles, Shift for perfect proportions, multi-select, duplicate, copy & paste, layer ordering. |
+| 🐧 **Works everywhere** | Windows, macOS and Linux (GNOME, KDE, X11 and Wayland), with the same shortcut and the same tools. |
 | 🔍 **Zoom and pan** | Ctrl+scroll to zoom, scroll or Space+drag to pan, and one click to snap back to your screen. |
 | 🌗 **Light and dark mode** | Matches Excalidraw's themes, or follows your system automatically. |
 | 📝 **Stays out of your way** | Clicks pass straight through to your apps when you're not drawing. Choose whether drawings stay on screen or hide until next time. On macOS it works over full-screen apps and on every desktop. |
@@ -81,7 +114,7 @@ Prefer not to install anything? Grab **[`Drawzy-Portable.exe`](https://github.co
 
 ## ⌨️ Shortcuts
 
-| Global (work in any app) | Windows | macOS |
+| Global (work in any app) | Windows and Linux | macOS |
 |---|---|---|
 | Start / stop drawing | `Ctrl` `Shift` `D` | `⌘` `Shift` `D` |
 | Show / hide drawings | `Ctrl` `Shift` `H` | `⌘` `Shift` `H` |
@@ -119,10 +152,10 @@ cd drawzy
 npm install
 npm start          # run Drawzy from source
 npm test           # launch the app, check the drawing engine loads, and exit
-npm run dist       # build the installers for your OS into dist/ (Windows: .exe, macOS: .dmg)
+npm run dist       # build the installers for your OS into dist/ (.exe, .dmg, or .AppImage/.deb/.rpm)
 ```
 
-Every push is built and launch-tested on Windows and macOS by GitHub Actions. Pushing a `v*` tag also publishes the installers as a release.
+Every push is built and launch-tested on Windows, macOS, Ubuntu and Fedora by GitHub Actions. Pushing a `v*` tag also publishes the installers as a release.
 
 <details>
 <summary><b>Project layout</b></summary>
@@ -144,7 +177,7 @@ assets/         README images and the icon source (icon.svg)
 - [ ] Multi-monitor support (today Drawzy covers your main display)
 - [ ] Custom hotkeys
 - [x] macOS build
-- [ ] Linux build
+- [x] Linux build
 - [ ] Code signing and notarization for a warning-free install
 
 Ideas and bug reports are very welcome. [Open an issue](https://github.com/Aayush-shrma/drawzy/issues/new/choose).

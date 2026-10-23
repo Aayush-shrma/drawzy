@@ -148,6 +148,7 @@ const ICONS = {
   forward: '<path d="M12 19V6M8 10l4-4 4 4"/>',
   toFront: '<path d="M12 20V9M8 13l4-4 4 4M5 4h14"/>',
   exit: '<path d="M15 4h4v16h-4M10 16l4-4-4-4M14 12H4"/>',
+  power: '<path d="M12 3v8M7 6.3a7.5 7.5 0 1 0 10 0"/>',
 };
 
 const svg = (inner) => `<svg viewBox="0 0 24 24">${inner}</svg>`;
@@ -284,6 +285,7 @@ const MENU_ITEMS = [
   { id: 'find', icon: 'search', label: 'Find on canvas', kbd: 'Ctrl+F', run: () => openFind() },
   { id: 'help', icon: 'help', label: 'Help', kbd: '?', run: () => openHelp() },
   { id: 'reset', icon: 'trash', label: 'Reset the canvas', run: () => clearAll() },
+  { id: 'quit', icon: 'power', label: 'Quit Drawzy', run: () => overlay.quit() },
 ];
 
 const PREF_ITEMS = [
@@ -293,6 +295,7 @@ const PREF_ITEMS = [
   { id: 'exit-hide', check: () => settings.onExit === 'hide', label: 'Hide until I draw again', run: () => setOnExit('hide') },
   { sep: true },
   { id: 'remember', check: () => settings.remember, label: 'Remember after quitting', run: () => toggleRemember() },
+  { id: 'login', check: () => state.openAtLogin, label: 'Open at login', run: () => toggleOpenAtLogin() },
 ];
 
 function menuItem(m, extraClass = '') {
@@ -352,6 +355,12 @@ function buildMenu() {
     MENU_ITEMS.find((m) => m.id === id).run();
   });
   renderMenu();
+}
+
+// Login items live in the main process; the menu keeps a copy so it can draw the checkmark.
+function toggleOpenAtLogin() {
+  state.openAtLogin = !state.openAtLogin;
+  overlay.setOpenAtLogin(state.openAtLogin);
 }
 
 function setOnExit(mode) {
@@ -1699,7 +1708,9 @@ function commands() {
     { name: `Remember drawings after quitting: turn ${settings.remember ? 'off' : 'on'}`, icon: 'check', run: toggleRemember },
     { name: 'Keyboard shortcuts', icon: 'help', keys: '?', run: openHelp },
     { name: 'Reset the canvas', icon: 'trash', run: clearAll },
+    { name: `Open at login: turn ${state.openAtLogin ? 'off' : 'on'}`, icon: 'check', run: toggleOpenAtLogin },
     { name: 'Stop drawing', icon: 'exit', keys: 'Esc', run: () => overlay.exitDraw() },
+    { name: 'Quit Drawzy', icon: 'power', run: () => overlay.quit() },
   ];
 }
 
@@ -2155,6 +2166,10 @@ overlay.onMode((on) => {
 
 overlay.onVisible((on) => {
   canvas.style.visibility = on ? 'visible' : 'hidden';
+});
+
+overlay.onMode((on) => {
+  if (on) overlay.getOpenAtLogin().then((v) => { state.openAtLogin = v; });
 });
 
 overlay.onCommand((cmd) => {

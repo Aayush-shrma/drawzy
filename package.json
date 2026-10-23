@@ -1,8 +1,9 @@
 {
   "name": "drawzy",
   "productName": "Drawzy",
-  "version": "1.1.0",
-  "description": "Draw on anything on your screen. Excalidraw-style sketching, arrows, notes and a laser pointer, one shortcut away. For Windows and macOS.",
+  "desktopName": "drawzy.desktop",
+  "version": "1.2.0",
+  "description": "Draw on anything on your screen. Excalidraw-style sketching, arrows, notes and a laser pointer, one shortcut away. For Windows, macOS and Linux.",
   "main": "src/main.js",
   "author": "Aayush Sharma",
   "license": "MIT",
@@ -23,14 +24,16 @@
     "presentation",
     "electron",
     "windows",
-    "macos"
+    "macos",
+    "linux"
   ],
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --publish never",
     "dist:win": "electron-builder --win --publish never",
     "dist:mac": "electron-builder --mac --publish never",
-    "test": "electron . --self-test"
+    "test": "electron . --self-test",
+    "dist:linux": "electron-builder --linux --publish never"
   },
   "dependencies": {
     "perfect-freehand": "^1.2.3",
@@ -102,6 +105,52 @@
     "dmg": {
       "title": "Drawzy",
       "artifactName": "Drawzy-mac.dmg"
+    },
+    "linux": {
+      "icon": "src/assets/icon.png",
+      "category": "Graphics",
+      "synopsis": "Draw on anything on your screen",
+      "maintainer": "Aayush Sharma <aayushsharma9851@gmail.com>",
+      "vendor": "Aayush Sharma",
+      "executableName": "drawzy",
+      "executableArgs": [
+        "--ozone-platform=x11"
+      ],
+      "desktop": {
+        "entry": {
+          "Keywords": "draw;annotate;whiteboard;excalidraw;screen;presentation;"
+        }
+      },
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "syncDesktopName": true
+    },
+    "appImage": {
+      "artifactName": "Drawzy-linux.AppImage"
+    },
+    "deb": {
+      "artifactName": "Drawzy-linux.deb"
+    },
+    "rpm": {
+      "artifactName": "Drawzy-linux.rpm"
     },
     "publish": [
       {

@@ -2,6 +2,23 @@
 
 All notable changes to Drawzy are documented here. This project follows [Semantic Versioning](https://semver.org).
 
+## [1.2.0] — 2026-10-24
+
+### Added
+
+- **Linux support.** An `.rpm` for Fedora and RHEL-based distros, a `.deb` for Ubuntu and Debian, and an `.AppImage` for everything else.
+- On GNOME, including Wayland, Drawzy adds `Ctrl` + `Shift` + `D` and `Ctrl` + `Shift` + `H` to the system's custom keyboard shortcuts on first launch. Pressing the shortcut also starts Drawzy if it isn't running.
+- `drawzy --toggle` and `drawzy --toggle-visible`, for binding the shortcuts yourself on KDE Plasma, Sway, Hyprland and other Wayland desktops.
+- **Quit Drawzy** in the ☰ menu and command palette, and **Open at login** in Preferences, for desktops without a tray.
+
+### Changed
+
+- Every build is now launch-tested on Windows, macOS, Ubuntu (installed `.deb`) and Fedora (installed `.rpm`).
+
+### Fixed
+
+- Opening Drawzy while it was already running briefly started a second copy before handing over.
+
 ## [1.1.0] — 2026-10-22
 
 ### Added
@@ -33,5 +50,6 @@ The first public release.
 - System tray menu with "Start with Windows".
 - One-click Windows installer and a portable `.exe`.
 
+[1.2.0]: https://github.com/Aayush-shrma/drawzy/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Aayush-shrma/drawzy/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Aayush-shrma/drawzy/releases/tag/v1.0.0

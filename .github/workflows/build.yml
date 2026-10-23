@@ -1,6 +1,6 @@
 name: Build
 
-# Every push and pull request builds Drawzy for Windows and macOS and launch-tests the packaged app.
+# Every push and pull request builds Drawzy for Windows, macOS and Linux and launch-tests the packaged app.
 # Pushing a tag like v1.2.0 also publishes the installers as a GitHub release.
 on:
   push:
@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 jobs:
-  # Create the release once, up front, so both platforms upload into the same one.
+  # Create the release once, up front, so every platform uploads into the same one.
   release:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
@@ -32,7 +32,7 @@ jobs:
         include:
           - os: windows-latest
             dist: dist:win
-            app: dist/win-unpacked/Drawzy.exe
+            test: dist/win-unpacked/Drawzy.exe --self-test
             files: |
               dist/Drawzy-Setup.exe
               dist/Drawzy-Setup.exe.blockmap
@@ -40,11 +40,20 @@ jobs:
               dist/latest.yml
           - os: macos-latest
             dist: dist:mac
-            app: dist/mac-universal/Drawzy.app/Contents/MacOS/Drawzy
+            test: dist/mac-universal/Drawzy.app/Contents/MacOS/Drawzy --self-test
             files: |
               dist/Drawzy-mac.dmg
               dist/Drawzy-mac.dmg.blockmap
               dist/latest-mac.yml
+          # Installs the real .deb, then launches the installed app on a virtual display.
+          - os: ubuntu-latest
+            dist: dist:linux
+            test: sudo apt-get install -y ./dist/Drawzy-linux.deb && xvfb-run -a /opt/Drawzy/drawzy --self-test
+            files: |
+              dist/Drawzy-linux.AppImage
+              dist/Drawzy-linux.deb
+              dist/Drawzy-linux.rpm
+              dist/latest-linux.yml
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
@@ -54,6 +63,10 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Install Linux build tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y rpm xvfb
+
       - run: npm ci
 
       - name: Build
@@ -61,7 +74,7 @@ jobs:
 
       - name: Launch test
         shell: bash
-        run: '"${{ matrix.app }}" --self-test'
+        run: ${{ matrix.test }}
 
       - uses: actions/upload-artifact@v5
         with:
@@ -79,3 +92,20 @@ jobs:
         env:
           FILES: ${{ matrix.files }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Installs the .rpm on a real Fedora and launches it, so Fedora users get a package that installs cleanly.
+  fedora:
+    needs: build
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: drawzy-Linux
+
+      - name: Install the .rpm
+        run: dnf install -y ./Drawzy-linux.rpm xorg-x11-server-Xvfb
+
+      # Containers run as root, which Chromium only allows without its sandbox.
+      - name: Launch test
+        run: xvfb-run -a /opt/Drawzy/drawzy --self-test --no-sandbox
