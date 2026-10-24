@@ -2,6 +2,13 @@
 
 All notable changes to Drawzy are documented here. This project follows [Semantic Versioning](https://semver.org).
 
+## [1.3.0] — 2026-10-24
+
+### Added
+
+- **Chrome extension.** The same drawing tools on any web page, for Chrome, Edge, Brave and other Chromium browsers on Windows and macOS. `Ctrl` / `⌘` + `Shift` + `D` toggles drawing, `Ctrl` / `⌘` + `Shift` + `H` shows or hides drawings, and each page keeps its own drawing.
+- The extension asks only for access to the tab you activate it on (`activeTab`), not to every site.
+
 ## [1.2.0] — 2026-10-24
 
 ### Added
@@ -50,6 +57,7 @@ The first public release.
 - System tray menu with "Start with Windows".
 - One-click Windows installer and a portable `.exe`.
 
+[1.3.0]: https://github.com/Aayush-shrma/drawzy/releases/tag/v1.3.0
 [1.2.0]: https://github.com/Aayush-shrma/drawzy/releases/tag/v1.2.0
 [1.1.0]: https://github.com/Aayush-shrma/drawzy/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Aayush-shrma/drawzy/releases/tag/v1.0.0

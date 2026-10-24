@@ -1,6 +1,7 @@
 name: Build
 
-# Every push and pull request builds Drawzy for Windows, macOS and Linux and launch-tests the packaged app.
+# Every push and pull request builds Drawzy for Windows, macOS and Linux (plus the Chrome extension) and
+# launch-tests the packaged app.
 # Pushing a tag like v1.2.0 also publishes the installers as a GitHub release.
 on:
   push:
@@ -58,6 +59,7 @@ jobs:
               dist/Drawzy-linux.deb
               dist/Drawzy-linux.rpm
               dist/latest-linux.yml
+              dist/Drawzy-chrome.zip
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
@@ -79,6 +81,10 @@ jobs:
       - name: Launch test
         shell: bash
         run: ${{ matrix.test }}
+
+      - name: Build Chrome extension
+        if: runner.os == 'Linux'
+        run: npm run build:extension
 
       - uses: actions/upload-artifact@v5
         with:

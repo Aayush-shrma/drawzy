@@ -11,6 +11,8 @@
 [![Download for macOS](https://img.shields.io/badge/Download-macOS-1b1b1f?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-mac.dmg)
 &nbsp;
 [![Download for Linux](https://img.shields.io/badge/Download-Linux-e8590c?style=for-the-badge&logo=linux&logoColor=white)](#linux)
+&nbsp;
+[![Chrome extension](https://img.shields.io/badge/Chrome-extension-2f9e44?style=for-the-badge&logo=googlechrome&logoColor=white)](#chrome-extension)
 
 [![Latest release](https://img.shields.io/github/v/release/Aayush-shrma/drawzy?color=6965db&label=release)](https://github.com/Aayush-shrma/drawzy/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/Aayush-shrma/drawzy/total?color=2f9e44)](https://github.com/Aayush-shrma/drawzy/releases)
@@ -95,6 +97,19 @@ Using the AppImage? Use its full path instead of `drawzy`, for example `~/Applic
 > [!TIP]
 > Fedora's GNOME doesn't show tray icons, so everything from the tray is also in Drawzy's **☰ menu**: **Preferences → Open at login** and **Quit Drawzy**. If the AppImage says it needs FUSE, install `fuse-libs` (Fedora) or `libfuse2t64` (Ubuntu 24.04+), or use the `.rpm` or `.deb` instead.
 
+### Chrome extension
+
+Want to draw on web pages only, or can't install apps on your computer? The extension puts the same tools on any website, in Chrome, Edge, Brave and other Chromium browsers on Windows and macOS.
+
+1. **[Download `Drawzy-chrome.zip`](https://github.com/Aayush-shrma/drawzy/releases/latest/download/Drawzy-chrome.zip)** and unzip it.
+2. Open `chrome://extensions`, turn on **Developer mode** (top right), click **Load unpacked** and pick the unzipped folder.
+3. On any page, press **`Ctrl` + `Shift` + `D`** (**`⌘` + `Shift` + `D`** on a Mac) or click the Drawzy icon. Press **`Esc`** to stop.
+
+Each page keeps its own drawing, so your notes come back when you return to it. Chrome doesn't allow extensions on its own pages (`chrome://`, the Web Store, the new tab page), so the icon shows a red **!** there.
+
+> [!NOTE]
+> **Private by design:** the extension can only see a tab after you press the shortcut or click its icon on that tab. It doesn't read your browsing, and nothing is sent anywhere. If you also have the desktop app, its shortcut wins; change the extension's at `chrome://extensions/shortcuts`.
+
 ## 🧰 Features
 
 | | |
@@ -178,6 +193,8 @@ assets/         README images and the icon source (icon.svg)
 - [ ] Custom hotkeys
 - [x] macOS build
 - [x] Linux build
+- [x] Chrome extension
+- [ ] Chrome Web Store listing
 - [ ] Code signing and notarization for a warning-free install
 
 Ideas and bug reports are very welcome. [Open an issue](https://github.com/Aayush-shrma/drawzy/issues/new/choose).

@@ -9,6 +9,8 @@ const $ = (id) => document.getElementById(id);
 
 const FONT = '"Segoe Print", "Bradley Hand", "Chalkboard SE", "Comic Sans MS", cursive';
 const IS_MAC = window.overlay?.platform === 'darwin';
+// The Chrome extension runs this same engine inside a page; it has no app to quit or start at login.
+const IN_BROWSER = window.overlay?.host === 'browser';
 // Shortcut labels are written Windows-style and translated for macOS.
 const keyLabel = (s) => (IS_MAC ? s.replace(/Ctrl/g, 'Cmd').replace(/Alt/g, 'Option') : s);
 const LINE_HEIGHT = 1.5;
@@ -34,7 +36,8 @@ import('../node_modules/perfect-freehand/dist/esm/index.mjs').then((m) => {
 // ---------------------------------------------------------------- settings & storage
 
 const SETTINGS_KEY = 'drawzy.settings';
-const DRAWING_KEY = 'drawzy.drawing';
+// The extension keeps a separate drawing for each page.
+const DRAWING_KEY = window.overlay?.drawingKey || 'drawzy.drawing';
 
 function load(key) {
   try {
@@ -285,8 +288,8 @@ const MENU_ITEMS = [
   { id: 'find', icon: 'search', label: 'Find on canvas', kbd: 'Ctrl+F', run: () => openFind() },
   { id: 'help', icon: 'help', label: 'Help', kbd: '?', run: () => openHelp() },
   { id: 'reset', icon: 'trash', label: 'Reset the canvas', run: () => clearAll() },
-  { id: 'quit', icon: 'power', label: 'Quit Drawzy', run: () => overlay.quit() },
-];
+  { id: 'quit', icon: 'power', label: 'Quit Drawzy', desktop: true, run: () => overlay.quit() },
+].filter((m) => !(IN_BROWSER && m.desktop));
 
 const PREF_ITEMS = [
   { id: 'lock', check: () => settings.toolLock, label: 'Tool lock', kbd: 'Q', run: () => toggleToolLock() },
@@ -295,8 +298,8 @@ const PREF_ITEMS = [
   { id: 'exit-hide', check: () => settings.onExit === 'hide', label: 'Hide until I draw again', run: () => setOnExit('hide') },
   { sep: true },
   { id: 'remember', check: () => settings.remember, label: 'Remember after quitting', run: () => toggleRemember() },
-  { id: 'login', check: () => state.openAtLogin, label: 'Open at login', run: () => toggleOpenAtLogin() },
-];
+  { id: 'login', check: () => state.openAtLogin, label: 'Open at login', desktop: true, run: () => toggleOpenAtLogin() },
+].filter((m) => !(IN_BROWSER && m.desktop));
 
 function menuItem(m, extraClass = '') {
   const icon = m.check
@@ -1708,10 +1711,10 @@ function commands() {
     { name: `Remember drawings after quitting: turn ${settings.remember ? 'off' : 'on'}`, icon: 'check', run: toggleRemember },
     { name: 'Keyboard shortcuts', icon: 'help', keys: '?', run: openHelp },
     { name: 'Reset the canvas', icon: 'trash', run: clearAll },
-    { name: `Open at login: turn ${state.openAtLogin ? 'off' : 'on'}`, icon: 'check', run: toggleOpenAtLogin },
+    { name: `Open at login: turn ${state.openAtLogin ? 'off' : 'on'}`, icon: 'check', desktop: true, run: toggleOpenAtLogin },
     { name: 'Stop drawing', icon: 'exit', keys: 'Esc', run: () => overlay.exitDraw() },
-    { name: 'Quit Drawzy', icon: 'power', run: () => overlay.quit() },
-  ];
+    { name: 'Quit Drawzy', icon: 'power', desktop: true, run: () => overlay.quit() },
+  ].filter((c) => !(IN_BROWSER && c.desktop));
 }
 
 const palette = { items: [], index: 0 };

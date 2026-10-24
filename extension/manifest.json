@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Drawzy",
+  "version": "0.0.0",
+  "description": "Draw on any web page with Excalidraw-style tools. Press Ctrl+Shift+D to start, Esc to stop.",
+  "homepage_url": "https://github.com/Aayush-shrma/drawzy",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Draw on this page (Ctrl+Shift+D)",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["activeTab", "scripting", "clipboardRead", "clipboardWrite"],
+  "commands": {
+    "toggle-draw": {
+      "suggested_key": { "default": "Ctrl+Shift+D", "mac": "Command+Shift+D" },
+      "description": "Start or stop drawing on the page"
+    },
+    "toggle-visible": {
+      "suggested_key": { "default": "Ctrl+Shift+H", "mac": "Command+Shift+H" },
+      "description": "Show or hide your drawings"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["src/overlay.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
